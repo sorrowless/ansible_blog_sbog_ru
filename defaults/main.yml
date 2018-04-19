@@ -1,0 +1,13 @@
+---
+site_hostname: blog.sbog.ru
+# Link to the main site from blog
+mainsite_hostname: sbog.ru
+origin_remote: https://github.com/sorrowless/blog_sbog_ru.git
+# Path to certs dir
+tls_path: /etc/ssl_certs
+# Path to checkout source content to
+git_dir: "/root/{{ site_hostname }}"
+# Path to virtualenv
+venv_dir: "{{ git_dir }}/.venv"
+# Yandex metrika number
+ya_metrika: 00000000

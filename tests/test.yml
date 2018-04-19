@@ -1,0 +1,7 @@
+---
+- name: Deploy personal blog to target host
+  hosts: sbog_ru_webservers
+  remote_user: root
+
+  roles:
+    - blog_sbog_ru

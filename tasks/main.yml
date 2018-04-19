@@ -1,0 +1,65 @@
+---
+- name: Checkout site data
+  git:
+    clone: yes
+    dest: "{{ git_dir }}"
+    repo: "{{ origin_remote }}"
+  notify:
+    - Restart Nginx
+
+- name: Ensure needed packages installed
+  package:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - python3
+    - python3-pip
+    - python3-virtualenv
+
+- name: Install python dependencies into virtualenv
+  pip:
+    requirements: "{{ git_dir }}/requirements.txt"
+    virtualenv: "{{ venv_dir }}"
+    virtualenv_command: /usr/bin/python3 -m venv
+    virtualenv_site_packages: no
+  become_user: "{{ ansible_user }}"
+  become: yes
+
+- name: Overwrite sensitive settings
+  template:
+    src: sensitive_settings.py
+    dest: "{{ git_dir }}/sensitive_settings.py"
+    mode: 0644
+    owner: root
+    group: root
+
+- name: Render pages
+  command: "{{ venv_dir }}/bin/pelican -s content"
+  args:
+    chdir: "{{ git_dir }}"
+
+- name: Ensure target directories
+  file:
+    path: "/var/www/{{ site_hostname }}"
+    state: directory
+
+- name: Recursively copy output files
+  synchronize:
+    src: "{{ git_dir }}/output/"
+    dest: "/var/www/{{ site_hostname }}/"
+  delegate_to: "{{ inventory_hostname }}"
+
+- name: Copy nginx config
+  template:
+    src: nginx.conf
+    dest: "/etc/nginx/sites-available/{{ site_hostname }}.conf"
+  notify:
+    - Restart Nginx
+
+- name: Create nginx symlink
+  file:
+    src: "/etc/nginx/sites-available/{{ site_hostname }}.conf"
+    dest: "/etc/nginx/sites-enabled/{{ site_hostname }}.conf"
+    state: link
+  notify:
+    - Restart Nginx
