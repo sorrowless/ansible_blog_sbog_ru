@@ -4,6 +4,7 @@
     clone: yes
     dest: "{{ git_dir }}"
     repo: "{{ origin_remote }}"
+    force: yes
   notify:
     - Restart Nginx
 
@@ -14,7 +15,7 @@
   with_items:
     - python3
     - python3-pip
-    - python3-virtualenv
+    - python3-venv
 
 - name: Install python dependencies into virtualenv
   pip:
@@ -22,8 +23,6 @@
     virtualenv: "{{ venv_dir }}"
     virtualenv_command: /usr/bin/python3 -m venv
     virtualenv_site_packages: no
-  become_user: "{{ ansible_user }}"
-  become: yes
 
 - name: Overwrite sensitive settings
   template:
@@ -34,7 +33,7 @@
     group: root
 
 - name: Render pages
-  command: "{{ venv_dir }}/bin/pelican -s content"
+  command: "{{ venv_dir }}/bin/pelican content -s publishconf.py"
   args:
     chdir: "{{ git_dir }}"
 
