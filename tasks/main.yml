@@ -39,26 +39,11 @@
 
 - name: Ensure target directories
   file:
-    path: "/var/www/{{ site_hostname }}"
+    path: "/var/www/{{ blog_hostname }}"
     state: directory
 
 - name: Recursively copy output files
   synchronize:
     src: "{{ git_dir }}/output/"
-    dest: "/var/www/{{ site_hostname }}/"
+    dest: "/var/www/{{ blog_hostname }}/"
   delegate_to: "{{ inventory_hostname }}"
-
-- name: Copy nginx config
-  template:
-    src: nginx.conf
-    dest: "/etc/nginx/sites-available/{{ site_hostname }}.conf"
-  notify:
-    - Restart Nginx
-
-- name: Create nginx symlink
-  file:
-    src: "/etc/nginx/sites-available/{{ site_hostname }}.conf"
-    dest: "/etc/nginx/sites-enabled/{{ site_hostname }}.conf"
-    state: link
-  notify:
-    - Restart Nginx

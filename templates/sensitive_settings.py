@@ -16,4 +16,4 @@ MENUITEMS = (
 # Ya.Metrika
 YANDEX_METRYKA = {{ ya_metrika }}
 
-SITEURL = '{{ site_hostname }}'
+SITEURL = '{{ blog_hostname }}'
