@@ -2,6 +2,7 @@
 - name: Checkout site data
   git:
     clone: yes
+    depth: 1
     dest: "{{ git_dir }}"
     repo: "{{ origin_remote }}"
     force: yes
@@ -16,6 +17,7 @@
     - python3
     - python3-pip
     - python3-venv
+    - libjpeg-turbo-progs
 
 - name: Install python dependencies into virtualenv
   pip:
@@ -31,6 +33,24 @@
     mode: 0644
     owner: root
     group: root
+
+- name: Install pelican themes
+  git:
+    clone: yes
+    depth: 1
+    dest: "{{ git_dir }}/pelican-themes"
+    repo: https://github.com/getpelican/pelican-themes.git
+    recursive: no
+    force: yes
+
+- name: Install pelican plugins
+  git:
+    clone: yes
+    depth: 1
+    dest: "{{ git_dir }}/pelican-plugins"
+    repo: https://github.com/getpelican/pelican-plugins.git
+    recursive: no
+    force: yes
 
 - name: Render pages
   command: "{{ venv_dir }}/bin/pelican content -s publishconf.py"

@@ -4,7 +4,7 @@ blog_hostname: blog.sbog.ru
 mainsite_hostname: sbog.ru
 origin_remote: https://github.com/sorrowless/blog_sbog_ru.git
 # Path to checkout source content to
-git_dir: "/{{ ansible_user }}/{{ blog_hostname }}"
+git_dir: "/tmp/{{ blog_hostname }}"
 # Path to virtualenv
 venv_dir: "{{ git_dir }}/.venv"
 # Yandex metrika number
