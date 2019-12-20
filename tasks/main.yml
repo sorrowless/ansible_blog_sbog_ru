@@ -18,6 +18,14 @@
     - python3-pip
     - python3-venv
     - libjpeg-turbo-progs
+    - npm
+    - nodejs
+    - sshpass
+
+- name: Install svgo
+  npm:
+    name: svgo
+    global: yes
 
 - name: Install python dependencies into virtualenv
   pip:
